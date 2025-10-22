@@ -9,7 +9,17 @@ import datetime
 import os
 import gspread
 from google.oauth2.service_account import Credentials
+import streamlit as st
 import json
+
+scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+
+# Streamlit Secrets から credentials_json を取得
+credentials_info = json.loads(st.secrets["credentials_json"])
+
+creds = Credentials.from_service_account_info(credentials_info, scopes=scope)
+client = gspread.authorize(creds)
+
 
 # ページ設定
 st.set_page_config(page_title="NURBS Car Editor", layout="wide")
@@ -172,7 +182,7 @@ def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
         ctrlpts_str = json.dumps(ctrlpts, ensure_ascii=False)
         weights_str = json.dumps(weights, ensure_ascii=False)
 
-        row = [timestamp, model, ctrlpts_str, weights_str, alpha_value, adjective]  # 🔹追加
+        row = [timestamp, model, ctrlpts_str, weights_str, alpha_value, adjective]  
         row = [str(v).encode("utf-8", "ignore").decode("utf-8") for v in row]
         worksheet.append_row(row, value_input_option="USER_ENTERED")
 
