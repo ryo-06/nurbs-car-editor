@@ -9,7 +9,7 @@ import datetime
 import os
 import gspread
 from google.oauth2.service_account import Credentials
-import streamlit as st
+import json
 
 scope = [
     "https://spreadsheets.google.com/feeds",
@@ -168,15 +168,21 @@ adjective = st.selectbox(
     ["かわいい", "かっこいい", "シンプル", "未来的", "高級感がある", "スポーティ", "落ち着いている"]
 )
 
-# === Google Sheets保存設定 ===
-SERVICE_ACCOUNT_FILE = "credentials.json"
+# === Google Sheets保存設定（Secrets を利用） ===
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1-mgxO9tqejwKehnbLS5B2JhCocdHH_xDWSZRLGKAE3A/edit?usp=sharing"
 
 def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
     try:
-        creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        # 1) Streamlit Secrets から認証情報を取得（st.secrets に credentials_json セクションが入っていること）
+        if "credentials_json" not in st.secrets:
+            raise RuntimeError("Streamlit secrets に 'credentials_json' が見つかりません。Manage app → Secrets を確認してください。")
+
+        credentials_info = dict(st.secrets["credentials_json"])
+        creds = Credentials.from_service_account_info(credentials_info, scopes=SCOPES)
         client = gspread.authorize(creds)
+
+        # 2) スプレッドシートに書き込み
         spreadsheet = client.open_by_url(SPREADSHEET_URL)
         worksheet = spreadsheet.sheet1
 
@@ -184,7 +190,8 @@ def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
         ctrlpts_str = json.dumps(ctrlpts, ensure_ascii=False)
         weights_str = json.dumps(weights, ensure_ascii=False)
 
-        row = [timestamp, model, ctrlpts_str, weights_str, alpha_value, adjective]  
+        row = [timestamp, model, ctrlpts_str, weights_str, alpha_value, adjective]
+        # 文字化け回避
         row = [str(v).encode("utf-8", "ignore").decode("utf-8") for v in row]
         worksheet.append_row(row, value_input_option="USER_ENTERED")
 
@@ -201,3 +208,11 @@ if st.button("💾 保存する"):
         st.error("❌ 保存に失敗しました。")
         with st.expander("エラー内容を表示"):
             st.code(err, language="text")
+
+# デバック用
+st.write("secrets keys:", list(st.secrets.keys()))
+st.write("has credentials_json?:", "credentials_json" in st.secrets)
+# private_key の先頭30文字を表示（改行があるかを可視化）
+if "credentials_json" in st.secrets:
+    st.write(repr(st.secrets["credentials_json"]["private_key"][:60]))
+
