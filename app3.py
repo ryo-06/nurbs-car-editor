@@ -15,7 +15,19 @@ import json
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
 # Streamlit Secrets から credentials_json を取得
-credentials_info = json.loads(st.secrets["credentials_json"])
+credentials_info = {
+    "type": st.secrets["credentials_json"]["type"],
+    "project_id": st.secrets["credentials_json"]["project_id"],
+    "private_key_id": st.secrets["credentials_json"]["private_key_id"],
+    "private_key": st.secrets["credentials_json"]["private_key"],
+    "client_email": st.secrets["credentials_json"]["client_email"],
+    "client_id": st.secrets["credentials_json"]["client_id"],
+    "auth_uri": st.secrets["credentials_json"]["auth_uri"],
+    "token_uri": st.secrets["credentials_json"]["token_uri"],
+    "auth_provider_x509_cert_url": st.secrets["credentials_json"]["auth_provider_x509_cert_url"],
+    "client_x509_cert_url": st.secrets["credentials_json"]["client_x509_cert_url"],
+    "universe_domain": st.secrets["credentials_json"]["universe_domain"],
+}
 
 creds = Credentials.from_service_account_info(credentials_info, scopes=scope)
 client = gspread.authorize(creds)
