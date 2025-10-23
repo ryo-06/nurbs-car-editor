@@ -188,7 +188,7 @@ def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
         worksheet = spreadsheet.sheet1
 
         # ✅ 修正箇所：UTC→日本時間（JST, UTC+9）に変換
-        jst_time = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
+        jst_time = datetime.utcnow() + timedelta(hours=9)
         timestamp = jst_time.strftime("%Y-%m-%d %H:%M:%S")
 
         ctrlpts_str = json.dumps(ctrlpts, ensure_ascii=False)
