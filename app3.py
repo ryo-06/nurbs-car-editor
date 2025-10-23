@@ -10,6 +10,7 @@ import os
 import gspread
 from google.oauth2.service_account import Credentials
 import json
+from datetime import datetime, timedelta
 
 scope = [
     "https://spreadsheets.google.com/feeds",
@@ -42,7 +43,7 @@ st.markdown(
 )
 
 
-# === 車種データ ===
+# 車種データ
 CAR_MODELS = {
     "Kei car": {
         "ctrlpts": [[-0.5, 0], [-0.5, 2.0], [-0.2, 2.65], [1.5, 3.0], [2.6, 4.75], [3.5, 5.1], [6.5, 5.1], [9.2, 5.1], [9.8, 4.5], [9.88, 1.75], [10.1, 1.58], [10.0, 0]],
@@ -88,7 +89,7 @@ CAR_MODELS = {
     }
 }
 
-# === サイドバー ===
+# サイドバー
 selected_model = st.sidebar.selectbox("車種を選択", list(CAR_MODELS.keys()))
 model_data = CAR_MODELS[selected_model]
 initial_ctrlpts = model_data["ctrlpts"]
@@ -124,7 +125,7 @@ if st.sidebar.button("初期値にリセット"):
         st.session_state[f"{selected_model}_w_{i}"] = float(w)
     st.rerun()
 
-# === NURBS曲線生成 ===
+# NURBS曲線生成
 curve = NURBS.Curve()
 curve.degree = 3
 curve.ctrlpts = new_ctrlpts
@@ -133,7 +134,7 @@ curve.knotvector = knotvector.generate(curve.degree, len(new_ctrlpts))
 curve.delta = 0.01
 curve.evaluate()
 
-# === 描画 ===
+# 描画
 fig, ax = plt.subplots(figsize=(10, 7))
 try:
     bg = mpimg.imread(model_data.get("bg_image", ""))
@@ -160,12 +161,12 @@ ax.set_aspect('equal')
 ax.grid(True)
 st.pyplot(fig)
 
-# === 形容詞入力欄（🔹追加） ===
+# 形容詞入力欄
 st.markdown("---")
 st.markdown("### ✏️ この車の印象を教えてください")
 adjective = st.selectbox(
-    "この車を一言で表すと？",
-    ["かわいい", "かっこいい", "シンプル", "未来的", "高級感がある", "スポーティ", "落ち着いている"]
+    "あなたの作った車を一言で表すと？",
+    ["かわいい", "かっこいい", "頑丈そう", "速そう", "高級な", "親しみのある"]
 )
 
 # === Google Sheets保存設定（Secrets を利用） ===
@@ -186,7 +187,10 @@ def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
         spreadsheet = client.open_by_url(SPREADSHEET_URL)
         worksheet = spreadsheet.sheet1
 
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # ✅ 修正箇所：UTC→日本時間（JST, UTC+9）に変換
+        jst_time = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
+        timestamp = jst_time.strftime("%Y-%m-%d %H:%M:%S")
+
         ctrlpts_str = json.dumps(ctrlpts, ensure_ascii=False)
         weights_str = json.dumps(weights, ensure_ascii=False)
 
@@ -209,10 +213,5 @@ if st.button("💾 保存する"):
         with st.expander("エラー内容を表示"):
             st.code(err, language="text")
 
-# デバック用
-st.write("secrets keys:", list(st.secrets.keys()))
-st.write("has credentials_json?:", "credentials_json" in st.secrets)
-# private_key の先頭30文字を表示（改行があるかを可視化）
-if "credentials_json" in st.secrets:
-    st.write(repr(st.secrets["credentials_json"]["private_key"][:60]))
+
 
