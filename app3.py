@@ -28,26 +28,22 @@ client = gspread.authorize(creds)
 st.set_page_config(page_title="NURBS Car Editor", layout="wide")
 st.title("🚗 NURBS Car Silhouette Editor (Streamlit)")
 st.markdown("""
-## 🧩 アンケートの概要
-
 本アンケートは、**早稲田大学の研究プロジェクト**の一環として実施しているものです。  
 「**言葉によるエンジニアリング**」というテーマのもと、**言葉から理想的な自動車の形状を導出すること**を目的としています。  
 本アンケートでは、参加者の皆さまの操作結果をもとに、**言葉と形状の関係性**を分析いたします。  
 
 なお、回答内容から個人を特定することは一切ありません。
 
-**実施者：早稲田大学 情報生産システム研究科 荒川研究室**
+実施者：早稲田大学 情報生産システム研究科 荒川研究室 尾﨑椋太
 
 ---
 
-<div style="background-color:#fff3cd; border-left:6px solid #ffecb5; padding:10px; border-radius:6px; margin-bottom:16px;">
-⚠️ <b>操作はPC（パソコン）でのご利用を推奨しています。</b><br>
+⚠️ **操作はPC（パソコン）でのご利用を推奨しています。**  
 スマートフォンやタブレットからでも操作可能ですが、表示が崩れたり、スライダーの操作がしづらい場合があります。
-</div>
 
 ---
 
-## 🚗 操作方法
+## 操作方法
 
 1. 左のサイドバーで **車種を選択** してください。  
 2. 各 **Point X** スライダーで点を左右に、**Point Y** スライダーで上下に動かすことができます。  
