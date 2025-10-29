@@ -129,17 +129,23 @@ elif len(initial_weights) > len(initial_ctrlpts):
 
 st.sidebar.markdown("### ⚙️ 制御点と重み調整")
 
-# ✅ 不透明スライダーの上に「初期値にリセット」ボタンを配置
+# --- 不透明スライダーとリセット連動 ---
 if st.sidebar.button("初期値にリセット"):
     reset_state = {}
     for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
         reset_state[f"{selected_model}_x_{i}"] = float(pt[0])
         reset_state[f"{selected_model}_y_{i}"] = float(pt[1])
         reset_state[f"{selected_model}_w_{i}"] = float(w)
+    reset_state["alpha"] = 0.3  # 不透明度も初期化
     st.session_state.update(reset_state)
     st.rerun()
 
-alpha = st.sidebar.slider("塗りつぶしの不透明度", 0.0, 1.0, 0.3, 0.05)
+# セッションでalphaを保持
+if "alpha" not in st.session_state:
+    st.session_state.alpha = 0.3
+st.session_state.alpha = st.sidebar.slider(
+    "塗りつぶしの不透明度", 0.0, 1.0, st.session_state.alpha, 0.05
+)
 
 new_ctrlpts, new_weights = [], []
 for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
@@ -182,7 +188,7 @@ ax.plot(curve_pts[:, 0], curve_pts[:, 1], color='blue', linewidth=2)
 ctrl_np = np.array(new_ctrlpts)
 ax.plot(ctrl_np[:, 0], ctrl_np[:, 1], '--', color='tab:red', marker='o')
 poly_pts = curve.evalpts + [new_ctrlpts[-1], new_ctrlpts[0]]
-ax.add_patch(Polygon(poly_pts, closed=True, color='black', alpha=alpha))
+ax.add_patch(Polygon(poly_pts, closed=True, color='black', alpha=st.session_state.alpha))
 ax.set_xlim(-3, 13)
 ax.set_ylim(-3, 8)
 ax.set_aspect('equal')
@@ -197,7 +203,7 @@ adjective = st.selectbox(
     ["かわいい", "かっこいい", "頑丈そう", "速そう", "高級な", "親しみのある"]
 )
 
-# === Google Sheets保存設定（Secrets を利用） ===
+# === Google Sheets保存設定 ===
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1-mgxO9tqejwKehnbLS5B2JhCocdHH_xDWSZRLGKAE3A/edit?usp=sharing"
 
@@ -230,13 +236,14 @@ def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
 
 # === 送信ボタン ===
 if st.button("💾 保存する"):
-    ok, err = save_to_google_sheet(selected_model, new_ctrlpts, new_weights, alpha, adjective)
+    ok, err = save_to_google_sheet(selected_model, new_ctrlpts, new_weights, st.session_state.alpha, adjective)
     if ok:
         st.success("✅ Googleスプレッドシートに保存しました！")
     else:
         st.error("❌ 保存に失敗しました。")
         with st.expander("エラー内容を表示"):
             st.code(err, language="text")
+
 
 
 
