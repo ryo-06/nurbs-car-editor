@@ -23,7 +23,6 @@ credentials_info = dict(st.secrets["credentials_json"])
 creds = Credentials.from_service_account_info(credentials_info, scopes=scope)
 client = gspread.authorize(creds)
 
-
 # ページ設定
 st.set_page_config(page_title="NURBS Car Editor", layout="wide")
 st.title("🚗 NURBS Car Silhouette Editor ")
@@ -38,7 +37,7 @@ st.markdown("""
 ---
 
 ⚠️ **操作はPC（パソコン）でのご利用を推奨しています。**  
-スマートフォンやタブレットからでも操作可能ですが、表示が崩れたり、スライダーの操作がしづらい場合があります。
+スマートフォンやタブレットからでも操作可能ですが、スライダーの操作がしづらい場合があります。
 
 ---
 
@@ -55,8 +54,7 @@ st.markdown("""
 ---
 """)
 
-
-# 自動翻訳を無効化（HTMLメタタグを挿入）
+# 自動翻訳を無効化
 st.markdown(
     """
     <meta name="google" content="notranslate">
@@ -68,7 +66,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
 
 # 車種データ
 CAR_MODELS = {
@@ -131,6 +128,17 @@ elif len(initial_weights) > len(initial_ctrlpts):
     initial_weights = initial_weights[:len(initial_ctrlpts)]
 
 st.sidebar.markdown("### ⚙️ 制御点と重み調整")
+
+# ✅ 不透明スライダーの上に「初期値にリセット」ボタンを配置
+if st.sidebar.button("初期値にリセット"):
+    reset_state = {}
+    for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
+        reset_state[f"{selected_model}_x_{i}"] = float(pt[0])
+        reset_state[f"{selected_model}_y_{i}"] = float(pt[1])
+        reset_state[f"{selected_model}_w_{i}"] = float(w)
+    st.session_state.update(reset_state)
+    st.rerun()
+
 alpha = st.sidebar.slider("塗りつぶしの不透明度", 0.0, 1.0, 0.3, 0.05)
 
 new_ctrlpts, new_weights = [], []
@@ -144,13 +152,6 @@ for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
     ww = st.sidebar.slider(f"Weight {i}", 0.1, 150.0, st.session_state[w_key], 0.1, key=w_key)
     new_ctrlpts.append([float(x), float(y)])
     new_weights.append(float(ww))
-
-if st.sidebar.button("初期値にリセット"):
-    for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
-        st.session_state[f"{selected_model}_x_{i}"] = float(pt[0])
-        st.session_state[f"{selected_model}_y_{i}"] = float(pt[1])
-        st.session_state[f"{selected_model}_w_{i}"] = float(w)
-    st.rerun()
 
 # NURBS曲線生成
 curve = NURBS.Curve()
@@ -202,7 +203,6 @@ SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1-mgxO9tqejwKehnbLS5B2
 
 def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
     try:
-        # 1) Streamlit Secrets から認証情報を取得（st.secrets に credentials_json セクションが入っていること）
         if "credentials_json" not in st.secrets:
             raise RuntimeError("Streamlit secrets に 'credentials_json' が見つかりません。Manage app → Secrets を確認してください。")
 
@@ -210,11 +210,10 @@ def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
         creds = Credentials.from_service_account_info(credentials_info, scopes=SCOPES)
         client = gspread.authorize(creds)
 
-        # 2) スプレッドシートに書き込み
         spreadsheet = client.open_by_url(SPREADSHEET_URL)
         worksheet = spreadsheet.sheet1
 
-        # ✅ 修正箇所：UTC→日本時間（JST, UTC+9）に変換
+        # ✅ JST（日本時間）で保存
         jst_time = datetime.utcnow() + timedelta(hours=9)
         timestamp = jst_time.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -222,7 +221,6 @@ def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
         weights_str = json.dumps(weights, ensure_ascii=False)
 
         row = [timestamp, model, ctrlpts_str, weights_str, alpha_value, adjective]
-        # 文字化け回避
         row = [str(v).encode("utf-8", "ignore").decode("utf-8") for v in row]
         worksheet.append_row(row, value_input_option="USER_ENTERED")
 
@@ -239,6 +237,7 @@ if st.button("💾 保存する"):
         st.error("❌ 保存に失敗しました。")
         with st.expander("エラー内容を表示"):
             st.code(err, language="text")
+
 
 
 
