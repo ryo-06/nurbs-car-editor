@@ -26,7 +26,7 @@ client = gspread.authorize(creds)
 
 # ページ設定
 st.set_page_config(page_title="NURBS Car Editor", layout="wide")
-st.title("🚗 NURBS Car Silhouette Editor (Streamlit)")
+st.title("🚗 NURBS Car Silhouette Editor ")
 st.markdown("""
 本アンケートは、**早稲田大学の研究プロジェクト**の一環として実施しているものです。  
 「**言葉によるエンジニアリング**」というテーマのもと、**言葉から理想的な自動車の形状を導出すること**を目的としています。  
