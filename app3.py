@@ -147,17 +147,34 @@ st.session_state.alpha = st.sidebar.slider(
     "塗りつぶしの不透明度", 0.0, 1.0, st.session_state.alpha, 0.05
 )
 
+# --- 重みスライダー ---
+st.sidebar.markdown("### 重み ")
+for i, w in enumerate(initial_weights):
+    w_key = f"{selected_model}_w_{i}"
+    if w_key not in st.session_state:
+        st.session_state[w_key] = float(w)
+    st.session_state[w_key] = st.sidebar.slider(
+        f"重み {i}", 0.1, 150.0, st.session_state[w_key], 0.1, key=w_key
+    )
+
+# --- 位置スライダー ---
+st.sidebar.markdown("### 位置 ")
 new_ctrlpts, new_weights = [], []
-for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
-    x_key, y_key, w_key = f"{selected_model}_x_{i}", f"{selected_model}_y_{i}", f"{selected_model}_w_{i}"
-    if x_key not in st.session_state: st.session_state[x_key] = float(pt[0])
-    if y_key not in st.session_state: st.session_state[y_key] = float(pt[1])
-    if w_key not in st.session_state: st.session_state[w_key] = float(w)
-    ww = st.sidebar.slider(f"重み {i}", 0.1, 150.0, st.session_state[w_key], 0.1, key=w_key)
-    x = st.sidebar.slider(f"位置X {i} ", float(pt[0]-1), float(pt[0]+1), st.session_state[x_key], 0.1, key=x_key)
-    y = st.sidebar.slider(f"位置Y {i} ", float(pt[1]-1), float(pt[1]+1), st.session_state[y_key], 0.1, key=y_key)
+for i, pt in enumerate(initial_ctrlpts):
+    x_key, y_key = f"{selected_model}_x_{i}", f"{selected_model}_y_{i}"
+    if x_key not in st.session_state:
+        st.session_state[x_key] = float(pt[0])
+    if y_key not in st.session_state:
+        st.session_state[y_key] = float(pt[1])
+    x = st.sidebar.slider(
+        f"位置X {i}", float(pt[0]-1), float(pt[0]+1), st.session_state[x_key], 0.1, key=x_key
+    )
+    y = st.sidebar.slider(
+        f"位置Y {i}", float(pt[1]-1), float(pt[1]+1), st.session_state[y_key], 0.1, key=y_key
+    )
     new_ctrlpts.append([float(x), float(y)])
-    new_weights.append(float(ww))
+    new_weights.append(float(st.session_state[f"{selected_model}_w_{i}"]))
+
 
 # NURBS曲線生成
 curve = NURBS.Curve()
