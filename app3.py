@@ -127,21 +127,21 @@ if len(initial_weights) < len(initial_ctrlpts):
 elif len(initial_weights) > len(initial_ctrlpts):
     initial_weights = initial_weights[:len(initial_ctrlpts)]
 
+
+# サイドバー：制御パネル
 st.sidebar.markdown("### ⚙️ 制御点と重み調整")
 
-# --- 初期値取得 ---
+# --- 初期値を取得 ---
 initial_ctrlpts = model_data[selected_model]["ctrlpts"]
 initial_weights = model_data[selected_model]["weights"]
 
-# --- 不透明スライダーとリセット連動 ---
+# --- 初期値リセットボタン ---
 if st.sidebar.button("初期値にリセット"):
-    reset_state = {}
     for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
-        reset_state[f"{selected_model}_x_{i}"] = float(pt[0])
-        reset_state[f"{selected_model}_y_{i}"] = float(pt[1])
-        reset_state[f"{selected_model}_w_{i}"] = float(w)
-    reset_state["alpha"] = 0.3  # 不透明度も初期化
-    st.session_state.update(reset_state)
+        st.session_state[f"{selected_model}_x_{i}"] = float(pt[0])
+        st.session_state[f"{selected_model}_y_{i}"] = float(pt[1])
+        st.session_state[f"{selected_model}_w_{i}"] = float(w)
+    st.session_state.alpha = 0.3  # 不透明度リセット
     st.rerun()
 
 # --- 不透明スライダー ---
@@ -152,7 +152,7 @@ st.session_state.alpha = st.sidebar.slider(
 )
 
 # --- 重みスライダー ---
-st.sidebar.markdown("### ⚖️ 重み (Weight)")
+st.sidebar.markdown("### 重み ")
 for i, w in enumerate(initial_weights):
     w_key = f"{selected_model}_w_{i}"
     if w_key not in st.session_state:
@@ -162,7 +162,7 @@ for i, w in enumerate(initial_weights):
     )
 
 # --- 位置スライダー ---
-st.sidebar.markdown("### 📍 位置 (Control Points)")
+st.sidebar.markdown("### 位置 ")
 new_ctrlpts, new_weights = [], []
 for i, pt in enumerate(initial_ctrlpts):
     x_key, y_key = f"{selected_model}_x_{i}", f"{selected_model}_y_{i}"
@@ -170,16 +170,16 @@ for i, pt in enumerate(initial_ctrlpts):
         st.session_state[x_key] = float(pt[0])
     if y_key not in st.session_state:
         st.session_state[y_key] = float(pt[1])
+
     x = st.sidebar.slider(
-        f"位置X {i}", float(pt[0]-1), float(pt[0]+1), st.session_state[x_key], 0.1
+        f"Point X {i}", float(pt[0] - 1.0), float(pt[0] + 1.0), st.session_state[x_key], 0.1
     )
     y = st.sidebar.slider(
-        f"位置Y {i}", float(pt[1]-1), float(pt[1]+1), st.session_state[y_key], 0.1
+        f"Point Y {i}", float(pt[1] - 1.0), float(pt[1] + 1.0), st.session_state[y_key], 0.1
     )
-    new_ctrlpts.append([float(x), float(y)])
+
+    new_ctrlpts.append([x, y])
     new_weights.append(float(st.session_state[f"{selected_model}_w_{i}"]))
-
-
 
 # NURBS曲線生成
 curve = NURBS.Curve()
