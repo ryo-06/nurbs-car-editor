@@ -129,6 +129,10 @@ elif len(initial_weights) > len(initial_ctrlpts):
 
 st.sidebar.markdown("### ⚙️ 制御点と重み調整")
 
+# --- 初期値取得 ---
+initial_ctrlpts = model_data[selected_model]["ctrlpts"]
+initial_weights = model_data[selected_model]["weights"]
+
 # --- 不透明スライダーとリセット連動 ---
 if st.sidebar.button("初期値にリセット"):
     reset_state = {}
@@ -140,7 +144,7 @@ if st.sidebar.button("初期値にリセット"):
     st.session_state.update(reset_state)
     st.rerun()
 
-# セッションでalphaを保持
+# --- 不透明スライダー ---
 if "alpha" not in st.session_state:
     st.session_state.alpha = 0.3
 st.session_state.alpha = st.sidebar.slider(
@@ -148,17 +152,17 @@ st.session_state.alpha = st.sidebar.slider(
 )
 
 # --- 重みスライダー ---
-st.sidebar.markdown("### 重み ")
+st.sidebar.markdown("### ⚖️ 重み (Weight)")
 for i, w in enumerate(initial_weights):
     w_key = f"{selected_model}_w_{i}"
     if w_key not in st.session_state:
         st.session_state[w_key] = float(w)
     st.session_state[w_key] = st.sidebar.slider(
-        f"重み {i}", 0.1, 150.0, st.session_state[w_key], 0.1, key=w_key
+        f"重み {i}", 0.1, 150.0, st.session_state[w_key], 0.1
     )
 
 # --- 位置スライダー ---
-st.sidebar.markdown("### 位置 ")
+st.sidebar.markdown("### 📍 位置 (Control Points)")
 new_ctrlpts, new_weights = [], []
 for i, pt in enumerate(initial_ctrlpts):
     x_key, y_key = f"{selected_model}_x_{i}", f"{selected_model}_y_{i}"
@@ -167,13 +171,14 @@ for i, pt in enumerate(initial_ctrlpts):
     if y_key not in st.session_state:
         st.session_state[y_key] = float(pt[1])
     x = st.sidebar.slider(
-        f"位置X {i}", float(pt[0]-1), float(pt[0]+1), st.session_state[x_key], 0.1, key=x_key
+        f"位置X {i}", float(pt[0]-1), float(pt[0]+1), st.session_state[x_key], 0.1
     )
     y = st.sidebar.slider(
-        f"位置Y {i}", float(pt[1]-1), float(pt[1]+1), st.session_state[y_key], 0.1, key=y_key
+        f"位置Y {i}", float(pt[1]-1), float(pt[1]+1), st.session_state[y_key], 0.1
     )
     new_ctrlpts.append([float(x), float(y)])
     new_weights.append(float(st.session_state[f"{selected_model}_w_{i}"]))
+
 
 
 # NURBS曲線生成
