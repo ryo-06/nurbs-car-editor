@@ -25,7 +25,7 @@ client = gspread.authorize(creds)
 
 # ページ設定
 st.set_page_config(page_title="NURBS Car Editor", layout="wide")
-st.title("🚗 NURBS Car Silhouette Editor ")
+st.title(" NURBS Car Silhouette Editor ")
 st.markdown("""
 本アンケートは、**早稲田大学の研究プロジェクト**の一環として実施しているものです。  
 「**言葉によるエンジニアリング**」というテーマのもと、**言葉から理想的な自動車の形状を導出すること**を目的としています。  
@@ -44,11 +44,11 @@ st.markdown("""
 ## 操作方法
 
 1. 左のサイドバーで **車種を選択** してください。  
-2. 各 **Point X** スライダーで点を左右に、**Point Y** スライダーで上下に動かすことができます。  
-3. 車の先端を丸くしたり尖らせたりしたい場合は、**Weight（重み）** を調整してください。  
-4. 基本的には **Weight を好みに調整** し、必要に応じて Point を微調整すると自然な形になります。  
+2. 車の先端を丸くしたり尖らせたりしたい場合は、**Weight（重み）** を調整してください。  
+3. 各 **位置X** スライダーで点を左右に、**位置Y** スライダーで上下に動かすことができます。  
+4. 基本的には 点の**"重み"を好みに調整** し、必要に応じて"位置"を微調整すると自然な形になります。  
 5. 調整後、**透明度スライダー** で車体を黒くし、その印象に合う言葉を選んで評価してください。  
-6. **複数の車種を回答する場合**は、1つの車種が終わったら **「保存」ボタンを押し、ページを更新** して次の車種を選んでください。  
+6. **複数の車種を回答する場合**は、1つの車種が終わったら **「保存」ボタンを押し、ページを更新** してください。  
 7. 回答は何度でも行うことができます。
 
 ---
@@ -153,9 +153,9 @@ for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
     if x_key not in st.session_state: st.session_state[x_key] = float(pt[0])
     if y_key not in st.session_state: st.session_state[y_key] = float(pt[1])
     if w_key not in st.session_state: st.session_state[w_key] = float(w)
-    x = st.sidebar.slider(f"Point {i} X", float(pt[0]-1), float(pt[0]+1), st.session_state[x_key], 0.1, key=x_key)
-    y = st.sidebar.slider(f"Point {i} Y", float(pt[1]-1), float(pt[1]+1), st.session_state[y_key], 0.1, key=y_key)
-    ww = st.sidebar.slider(f"Weight {i}", 0.1, 150.0, st.session_state[w_key], 0.1, key=w_key)
+    ww = st.sidebar.slider(f"重み {i}", 0.1, 150.0, st.session_state[w_key], 0.1, key=w_key)
+    x = st.sidebar.slider(f"位置X {i} ", float(pt[0]-1), float(pt[0]+1), st.session_state[x_key], 0.1, key=x_key)
+    y = st.sidebar.slider(f"位置Y {i} ", float(pt[1]-1), float(pt[1]+1), st.session_state[y_key], 0.1, key=y_key)
     new_ctrlpts.append([float(x), float(y)])
     new_weights.append(float(ww))
 
@@ -197,7 +197,7 @@ st.pyplot(fig)
 
 # 形容詞入力欄
 st.markdown("---")
-st.markdown("### ✏️ この車の印象を教えてください")
+st.markdown("### この車の印象を教えてください")
 adjective = st.selectbox(
     "あなたの作った車を一言で表すと？",
     ["かわいい", "かっこいい", "頑丈そう", "速そう", "高級な", "親しみのある"]
@@ -235,10 +235,10 @@ def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
         return False, str(e)
 
 # === 送信ボタン ===
-if st.button("💾 保存する"):
+if st.button("保存する"):
     ok, err = save_to_google_sheet(selected_model, new_ctrlpts, new_weights, st.session_state.alpha, adjective)
     if ok:
-        st.success("✅ Googleスプレッドシートに保存しました！")
+        st.success("✅ 保存しました！")
     else:
         st.error("❌ 保存に失敗しました。")
         with st.expander("エラー内容を表示"):
