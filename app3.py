@@ -221,10 +221,15 @@ ax.grid(True)
 
 st.pyplot(fig)
 
-# 形容詞入力欄
+# --- ユーザー入力欄 ---
 st.markdown("---")
-st.markdown("### この車の印象を教えてください")
+st.markdown("### 回答者情報")
 
+name = st.text_input("お名前")
+gender = st.radio("性別を選択してください", ["男", "女"], horizontal=True)
+age_group = st.selectbox("年代を選択してください", ["10代未満", "10代", "20代", "30代", "40代", "50代", "60代", "70代以上"])
+
+st.markdown("### この車の印象を教えてください")
 adjective = st.selectbox(
     "あなたの作った車を一言で表すと？",
     ["かわいい", "かっこいい", "頑丈そう", "速そう", "高級な", "親しみのある"]
@@ -235,10 +240,10 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1-mgxO9tqejwKehnbLS5B2JhCocdHH_xDWSZRLGKAE3A/edit?usp=sharing"
 
 
-def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
+def save_to_google_sheet(name, gender, age_group, model, ctrlpts, weights, alpha_value, adjective):
     try:
         if "credentials_json" not in st.secrets:
-            raise RuntimeError("Streamlit secrets に 'credentials_json' が見つかりません。Manage app → Secrets を確認してください。")
+            raise RuntimeError("Streamlit secrets に 'credentials_json' が見つかりません。")
 
         credentials_info = dict(st.secrets["credentials_json"])
         creds = Credentials.from_service_account_info(credentials_info, scopes=SCOPES)
@@ -254,7 +259,7 @@ def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
         ctrlpts_str = json.dumps(ctrlpts, ensure_ascii=False)
         weights_str = json.dumps(weights, ensure_ascii=False)
 
-        row = [timestamp, model, ctrlpts_str, weights_str, alpha_value, adjective]
+        row = [timestamp, name, gender, age_group, model, ctrlpts_str, weights_str, alpha_value, adjective]
         row = [str(v).encode("utf-8", "ignore").decode("utf-8") for v in row]
 
         worksheet.append_row(row, value_input_option="USER_ENTERED")
@@ -266,20 +271,27 @@ def save_to_google_sheet(model, ctrlpts, weights, alpha_value, adjective):
 
 # === 送信ボタン ===
 if st.button("保存する"):
-    ok, err = save_to_google_sheet(
-        selected_model,
-        new_ctrlpts,
-        new_weights,
-        st.session_state.alpha,
-        adjective
-    )
-
-    if ok:
-        st.success("✅ 保存しました！")
+    if not name.strip():
+        st.error("⚠️ 記入事項に回答してください。")
     else:
-        st.error("❌ 保存に失敗しました。")
-        with st.expander("エラー内容を表示"):
-            st.code(err, language="text")
+        ok, err = save_to_google_sheet(
+            name,
+            gender,
+            age_group,
+            selected_model,
+            new_ctrlpts,
+            new_weights,
+            st.session_state.alpha,
+            adjective
+        )
+
+        if ok:
+            st.success("✅ 保存しました！")
+        else:
+            st.error("❌ 保存に失敗しました。")
+            with st.expander("エラー内容を表示"):
+                st.code(err, language="text")
+
 
 
 
