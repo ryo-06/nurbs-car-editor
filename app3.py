@@ -30,26 +30,44 @@ st.markdown("""
 本アンケートは、**早稲田大学の研究プロジェクト**の一環として実施しているものです。  
 「**言葉によるエンジニアリング**」というテーマのもと、**言葉から理想的な自動車の形状を導出すること**を目的としています。  
 本アンケートでは、参加者の皆さまの操作結果をもとに、**言葉と形状の関係性**を分析いたします。  
-なお、回答内容から個人を特定することは一切ありません。  
+本研究以外の目的で個人情報を使用することはありません。
+本研究の内容にご理解・ご同意いただける方のみ、ご回答をお願いいたします。
+
 
 実施者：早稲田大学 情報生産システム研究科 荒川研究室 尾﨑椋太  
 
+This survey is being conducted as part of a research project at Waseda University.
+Under the theme of "Engineering starts with words," the project aims to derive the ideal car shape from words.
+In this survey, we will analyze the relationship between words and shapes based on the participants' actions.
+Your personal information will not be used for any purpose other than this research.
+Please respond only if you understand and agree to the contents of this research.
+
+Implemented by: Ryota Ozaki, Arakawa Laboratory, Graduate School of Information, Production and Systems, Waseda University
+
 ---
 
-⚠️ **操作はPC（パソコン）でのご利用を推奨しています。**  
-スマートフォンやタブレットからでも操作可能ですが、スライダーの操作がしづらい場合があります。
+⚠️ 操作はPCでのご利用を推奨しています。 
+    We recommend using a PC for this operation.
 
 ---
 
 ## 操作方法
 1. 左のサイドバーで **車種を選択** してください。  
-2. 車の先端を丸くしたり尖らせたりしたい場合は、**Weight（重み）** を調整してください。  
+2. 車の先端を丸くしたり尖らせたりしたい場合は、**重み** を調整してください。  
 3. 各 **位置X** スライダーで点を左右に、**位置Y** スライダーで上下に動かすことができます。  
-4. 基本的には 点の**"重み"を好みに調整** し、必要に応じて"位置"を微調整すると自然な形になります。  
+4. 基本的には 点の**重み**を好みに調整 し、必要に応じて位置を微調整すると自然な形になります。  
 5. 調整後、**透明度スライダー** で車体を黒くし、その印象に合う言葉を選んで評価してください。  
-6. **複数の車種を回答する場合**は、1つの車種が終わったら **「保存」ボタンを押し、ページを更新** してください。  
+6. **複数の車種を回答する場合**は、1つの車種が終わったら 「保存」ボタンを押し、ページを更新してください。  
 7. 回答は何度でも行うことができます。
 
+## Instructions
+1. **Select a vehicle model** from the left sidebar.
+2. If you want to make the car's tip rounded or pointed, adjust the **Weight**.
+3. You can move points left and right using the **Point X** sliders and up and down using the **Point Y** sliders.
+4. Basically, adjust the **Weight** of the points to your liking and fine-tune the position as needed to achieve a natural shape.
+5. After adjustments, use the **Transparency slider** to make the car body black, and rate it using words that best represent its impression.
+6. If you are **answering multiple vehicle models**, after finishing one vehicle model, press the "Save" button and refresh the page.
+7. You can answer as many times as you like.
 ---
 """)
 
@@ -66,7 +84,7 @@ st.markdown(
 
 # 車種データ
 CAR_MODELS = {
-    "軽自動車": {
+    "軽自動車(Light Vehicle)": {
         "ctrlpts": [[-0.5, 0], [-0.5, 2.0], [-0.2, 2.65], [1.5, 3.0],
                     [2.6, 4.75], [3.5, 5.1], [6.5, 5.1], [9.2, 5.1],
                     [9.8, 4.5], [9.88, 1.75], [10.1, 1.58], [10.0, 0]],
@@ -76,7 +94,7 @@ CAR_MODELS = {
         "ground_line": [-0.5, 10.0, 0.0],
         "bg_image": "Kei_car.jpg"
     },
-    "コンパクトカー": {
+    "コンパクトカー(Compact car)": {
         "ctrlpts": [[-0.6, -0.2], [-0.8, 2.0], [0.6, 3.2], [1.9, 3.4],
                     [3.8, 4.6], [6.6, 4.9], [10.0, 4.6], [9.8, 3.9],
                     [10.3, 2.0], [10.6, 1.2], [10.3, -0.2]],
@@ -95,7 +113,7 @@ CAR_MODELS = {
         "ground_line": [-0.1, 9.2, -0.5],
         "bg_image": "SUV.jpg"
     },
-    "セダン": {
+    "セダン(Sedan)": {
         "ctrlpts": [[-0.4, 0.6], [-0.2, 2.1], [1.2, 2.8], [2.4, 2.9],
                     [4.0, 4.0], [7.2, 4.0], [9.0, 3.1], [10.2, 3.0],
                     [10.2, 2.2], [10.35, 1.6], [10.2, 0.6]],
@@ -105,7 +123,7 @@ CAR_MODELS = {
         "ground_line": [-0.4, 10.2, 0.6],
         "bg_image": "sedan2.jpg"
     },
-    "ミニバン": {
+    "ミニバン(Minivan)": {
         "ctrlpts": [[-0.5, 0], [-0.4, 2.0], [0, 2.5], [1.4, 2.9],
                     [3.7, 5.0], [6.5, 5.0], [10.1, 5.0], [9.8, 4.6],
                     [10.2, 2.9], [10.1, 1.5], [10.1, 0]],
@@ -115,7 +133,7 @@ CAR_MODELS = {
         "ground_line": [-0.5, 10.1, 0],
         "bg_image": "Minivan.jpg"
     },
-    "クーペ": {
+    "クーペ(coupe)": {
         "ctrlpts": [[0, 0.8], [0.1, 2.25], [0.8, 2.7], [3.4, 3.2],
                     [4.6, 3.85], [6.0, 4.0], [7.2, 3.7],
                     [8.4, 3.5], [9.4, 3.0], [9.8, 2.0], [9.5, 0.8]],
@@ -128,7 +146,7 @@ CAR_MODELS = {
 }
 
 # サイドバー
-selected_model = st.sidebar.selectbox("車種を選択", list(CAR_MODELS.keys()))
+selected_model = st.sidebar.selectbox("車種を選択(Select a vehicle)", list(CAR_MODELS.keys()))
 model_data = CAR_MODELS[selected_model]
 
 initial_ctrlpts = model_data["ctrlpts"]
@@ -142,10 +160,10 @@ if len(initial_weights) < len(initial_ctrlpts):
 elif len(initial_weights) > len(initial_ctrlpts):
     initial_weights = initial_weights[:len(initial_ctrlpts)]
 
-st.sidebar.markdown("### ⚙️ 制御点と重み調整")
+st.sidebar.markdown("### ⚙️ 制御点と重み調整(Control points and weight adjustment)")
 
 # --- 不透明スライダーとリセット連動 ---
-if st.sidebar.button("初期値にリセット"):
+if st.sidebar.button("初期値にリセット(Reset to default)"):
     reset_state = {}
     for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
         reset_state[f"{selected_model}_x_{i}"] = float(pt[0])
@@ -160,7 +178,7 @@ if "alpha" not in st.session_state:
     st.session_state.alpha = 0.3
 
 st.session_state.alpha = st.sidebar.slider(
-    "塗りつぶしの不透明度", 0.0, 1.0, st.session_state.alpha, 0.05
+    "透明度(transparency)", 0.0, 1.0, st.session_state.alpha, 0.05
 )
 
 new_ctrlpts, new_weights = [], []
@@ -174,9 +192,9 @@ for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
     if w_key not in st.session_state:
         st.session_state[w_key] = float(w)
 
-    ww = st.sidebar.slider(f"重み {i}", 0.1, 150.0, st.session_state[w_key], 0.1, key=w_key)
-    x = st.sidebar.slider(f"位置X {i} ", float(pt[0]-1), float(pt[0]+1), st.session_state[x_key], 0.1, key=x_key)
-    y = st.sidebar.slider(f"位置Y {i} ", float(pt[1]-1), float(pt[1]+1), st.session_state[y_key], 0.1, key=y_key)
+    ww = st.sidebar.slider(f"重み(weight) {i}", 0.1, 150.0, st.session_state[w_key], 0.1, key=w_key)
+    x = st.sidebar.slider(f"位置(point)X {i} ", float(pt[0]-1), float(pt[0]+1), st.session_state[x_key], 0.1, key=x_key)
+    y = st.sidebar.slider(f"位置(point)Y {i} ", float(pt[1]-1), float(pt[1]+1), st.session_state[y_key], 0.1, key=y_key)
 
     new_ctrlpts.append([float(x), float(y)])
     new_weights.append(float(ww))
@@ -223,16 +241,16 @@ st.pyplot(fig)
 
 # --- ユーザー入力欄 ---
 st.markdown("---")
-st.markdown("### 回答者情報")
+st.markdown("### 回答者情報(Respondent Information)")
 
-name = st.text_input("お名前")
-gender = st.radio("性別を選択してください", ["男", "女"], horizontal=True)
-age_group = st.selectbox("年代を選択してください", ["10代未満", "10代", "20代", "30代", "40代", "50代", "60代", "70代以上"])
+name = st.text_input("お名前(Name)")
+gender = st.radio("性別(gender)", ["男性(M)", "女性(F)"], horizontal=True)
+age_group = st.selectbox("年代", ["10代未満(Under 10s)", "10代(10s)", "20代(20s)", "30代(30s)", "40代(40s)", "50代(50s)", "60代(60s)", "70代以上(70s and older)"])
 
-st.markdown("### この車の印象を教えてください")
+st.markdown("### この車の印象を教えてください(What are your impression of this car?)")
 adjective = st.selectbox(
-    "あなたの作った車を一言で表すと？",
-    ["かわいい", "かっこいい", "頑丈そう", "速そう", "高級な", "親しみのある"]
+    "あなたの作った車を一言で表すと？(How would you describe it?)",
+    ["かわいい(cute)", "かっこいい(cool)", "頑丈そう(sturdy)", "速そう(fast)", "高級な(luxury)", "親しみのある(familiar)"]
 )
 
 # === Google Sheets保存設定 ===
@@ -270,9 +288,9 @@ def save_to_google_sheet(name, gender, age_group, model, ctrlpts, weights, alpha
 
 
 # === 送信ボタン ===
-if st.button("保存する"):
+if st.button("保存する(save)"):
     if not name.strip():
-        st.error("⚠️ 記入事項に回答してください。")
+        st.error("⚠️ 記入事項に回答してください。(please answer the questions)")
     else:
         ok, err = save_to_google_sheet(
             name,
@@ -286,9 +304,9 @@ if st.button("保存する"):
         )
 
         if ok:
-            st.success("✅ 保存しました！")
+            st.success("✅ 保存しました！(saved)")
         else:
-            st.error("❌ 保存に失敗しました。")
+            st.error("❌ 保存に失敗しました。(save failed)")
             with st.expander("エラー内容を表示"):
                 st.code(err, language="text")
 
