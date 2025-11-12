@@ -243,7 +243,7 @@ st.pyplot(fig)
 st.markdown("---")
 st.markdown("### 回答者情報(Respondent Information)")
 
-name = st.text_input("お名前(Name)")
+name = st.text_input("ニックネーム(NickName)")
 gender = st.radio("性別(gender)", ["男性(M)", "女性(F)"], horizontal=True)
 age_group = st.selectbox("年代", ["10代未満(Under 10s)", "10代(10s)", "20代(20s)", "30代(30s)", "40代(40s)", "50代(50s)", "60代(60s)", "70代以上(70s and older)"])
 
