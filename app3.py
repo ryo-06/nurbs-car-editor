@@ -53,21 +53,23 @@ Implemented by: Ryota Ozaki, Arakawa Laboratory, Graduate School of Information,
 
 ## 操作方法
 1. 左のサイドバーで **車種を選択** してください。  
-2. 車の先端を丸くしたり尖らせたりしたい場合は、**重み** を調整してください。  
-3. 各 **位置X** スライダーで点を左右に、**位置Y** スライダーで上下に動かすことができます。  
-4. 基本的には 点の**重み**を好みに調整 し、必要に応じて位置を微調整すると自然な形になります。  
-5. 調整後、**透明度スライダー** で車体を黒くし、その印象に合う言葉を選んで評価してください。  
-6. **複数の車種を回答する場合**は、1つの車種が終わったら 「保存」ボタンを押し、ページを更新してください。  
-7. 回答は何度でも行うことができます。
+2. 点の順番は左下から順に0から始まります。
+3. 車の先端を丸くしたり尖らせたりしたい場合は、**重み** を調整してください。  
+4. 各 **位置X** スライダーで点を左右に、**位置Y** スライダーで上下に動かすことができます。  
+5. 基本的には 点の**重み**を好みに調整 し、必要に応じて位置を微調整すると自然な形になります。  
+6. 調整後、**透明度スライダー** で車体を黒くし、その印象に合う言葉を選んで評価してください。  
+7. **複数の車種を回答する場合**は、1つの車種が終わったら 「保存」ボタンを押し、ページを更新してください。  
+8. 回答は何度でも行うことができます。
 
 ## Instructions
 1. **Select a vehicle model** from the left sidebar.
-2. If you want to make the car's tip rounded or pointed, adjust the **Weight**.
-3. You can move points left and right using the **Point X** sliders and up and down using the **Point Y** sliders.
-4. Basically, adjust the **Weight** of the points to your liking and fine-tune the position as needed to achieve a natural shape.
-5. After adjustments, use the **Transparency slider** to make the car body black, and rate it using words that best represent its impression.
-6. If you are **answering multiple vehicle models**, after finishing one vehicle model, press the "Save" button and refresh the page.
-7. You can answer as many times as you like.
+2. The order of the points starts from the bottom left, beginning with 0.            
+3. If you want to make the car's tip rounded or pointed, adjust the **Weight**.
+4. You can move points left and right using the **Point X** sliders and up and down using the **Point Y** sliders.
+5. Basically, adjust the **Weight** of the points to your liking and fine-tune the position as needed to achieve a natural shape.
+6. After adjustments, use the **Transparency slider** to make the car body black, and rate it using words that best represent its impression.
+7. If you are **answering multiple vehicle models**, after finishing one vehicle model, press the "Save" button and refresh the page.
+8. You can answer as many times as you like.
 ---
 """)
 
