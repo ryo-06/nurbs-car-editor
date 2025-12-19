@@ -1,9 +1,20 @@
-streamlit
+# --- basic ---
 numpy
-matplotlib
-geomdl
-gspread
-google-auth
-google-auth-oauthlib
-google-auth-httplib2
 pandas
+matplotlib
+
+# --- data / analysis ---
+scipy
+scikit-learn
+
+# --- image processing ---
+opencv-python
+Pillow
+
+# --- web app ---
+flask
+flask-cors
+
+# --- utilities ---
+requests
+python-dotenv
