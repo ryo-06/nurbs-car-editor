@@ -1,0 +1,11 @@
+# credentials / secrets
+credentials.json
+credentials.txt
+
+# Python cache
+__pycache__/
+*.pyc
+
+# output folders
+output_images_attributes/
+summary_images/

@@ -1,8 +1,0 @@
-# Streamlit / Google関連ファイル
-credentials.json
-*.json
-
-# Pythonキャッシュなど
-__pycache__/
-*.pyc
-credentials.json
