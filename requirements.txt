@@ -1,20 +1,12 @@
-# --- basic ---
+
+streamlit
 numpy
 pandas
 matplotlib
-
-# --- data / analysis ---
 scipy
 scikit-learn
-
-# --- image processing ---
-opencv-python
 Pillow
-
-# --- web app ---
-flask
-flask-cors
-
-# --- utilities ---
-requests
-python-dotenv
+opencv-python
+geomdl
+gspread
+google-auth
