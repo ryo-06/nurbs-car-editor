@@ -117,7 +117,7 @@ CAR_MODELS = {
         "ground_line": [-0.1, 9.2, -0.5],
         "bg_image": "SUV.jpg"
     },
-    "セダン(Sedan)": {
+    "Sedan": {
         "ctrlpts": [[-0.4, 0.6], [-0.2, 2.1], [1.2, 2.8], [2.4, 2.9],
                     [4.0, 4.0], [7.2, 4.0], [9.0, 3.1], [10.2, 3.0],
                     [10.2, 2.2], [10.35, 1.6], [10.2, 0.6]],
@@ -150,7 +150,7 @@ CAR_MODELS = {
 }
 
 # サイドバー
-selected_model = st.sidebar.selectbox("車種を選択(Select a vehicle)", list(CAR_MODELS.keys()))
+selected_model = st.sidebar.selectbox("Select a vehicle", list(CAR_MODELS.keys()))
 model_data = CAR_MODELS[selected_model]
 
 initial_ctrlpts = model_data["ctrlpts"]
@@ -164,10 +164,10 @@ if len(initial_weights) < len(initial_ctrlpts):
 elif len(initial_weights) > len(initial_ctrlpts):
     initial_weights = initial_weights[:len(initial_ctrlpts)]
 
-st.sidebar.markdown("### ⚙️ 制御点と重み調整(Control points and weight adjustment)")
+st.sidebar.markdown("### ⚙️ Control points and weight adjustment")
 
 # --- 不透明スライダーとリセット連動 ---
-if st.sidebar.button("初期値にリセット(Reset to default)"):
+if st.sidebar.button("Reset to default"):
     reset_state = {}
     for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
         reset_state[f"{selected_model}_x_{i}"] = float(pt[0])
@@ -182,7 +182,7 @@ if "alpha" not in st.session_state:
     st.session_state.alpha = 0.3
 
 st.session_state.alpha = st.sidebar.slider(
-    "透明度(transparency)", 0.0, 1.0, st.session_state.alpha, 0.05
+    "transparency", 0.0, 1.0, st.session_state.alpha, 0.05
 )
 
 new_ctrlpts, new_weights = [], []
@@ -196,9 +196,9 @@ for i, (pt, w) in enumerate(zip(initial_ctrlpts, initial_weights)):
     if w_key not in st.session_state:
         st.session_state[w_key] = float(w)
 
-    ww = st.sidebar.slider(f"重み(weight) {i}", 0.1, 150.0, st.session_state[w_key], 0.1, key=w_key)
-    x = st.sidebar.slider(f"位置(point)X {i} ", float(pt[0]-1), float(pt[0]+1), st.session_state[x_key], 0.1, key=x_key)
-    y = st.sidebar.slider(f"位置(point)Y {i} ", float(pt[1]-1), float(pt[1]+1), st.session_state[y_key], 0.1, key=y_key)
+    ww = st.sidebar.slider(f"weight {i}", 0.1, 150.0, st.session_state[w_key], 0.1, key=w_key)
+    x = st.sidebar.slider(f"pointX {i} ", float(pt[0]-1), float(pt[0]+1), st.session_state[x_key], 0.1, key=x_key)
+    y = st.sidebar.slider(f"pointY {i} ", float(pt[1]-1), float(pt[1]+1), st.session_state[y_key], 0.1, key=y_key)
 
     new_ctrlpts.append([float(x), float(y)])
     new_weights.append(float(ww))
@@ -245,16 +245,16 @@ st.pyplot(fig)
 
 # --- ユーザー入力欄 ---
 st.markdown("---")
-st.markdown("### 回答者情報(Respondent Information)")
+st.markdown("### Respondent Information")
 
-name = st.text_input("ニックネーム(NickName)")
-gender = st.radio("性別(gender)", ["男性(M)", "女性(F)"], horizontal=True)
-age_group = st.selectbox("年代", ["10代未満(Under 10s)", "10代(10s)", "20代(20s)", "30代(30s)", "40代(40s)", "50代(50s)", "60代(60s)", "70代以上(70s and older)"])
+name = st.text_input("NickName")
+gender = st.radio("gender", ["M", "F"], horizontal=True)
+age_group = st.selectbox("generation", ["Under 10s", "10s", "20s", "30代(30s)", "40代(40s)", "50代(50s)", "60代(60s)", "70代以上(70s and older)"])
 
-st.markdown("### この車の印象を教えてください(What are your impression of this car?)")
+st.markdown("### What are your impression of this car?")
 adjective = st.selectbox(
-    "あなたの作った車を一言で表すと？(How would you describe it?)",
-    ["かわいい(cute)", "かっこいい(cool)", "頑丈そう(sturdy)", "速そう(fast)", "高級な(luxury)", "親しみのある(familiar)"]
+    "How would you describe it?",
+    ["かわいい(cute)", "かっこいい(cool)", "頑丈そう(sturdy)", "fast", "高級な(luxury)", "親しみのある(familiar)"]
 )
 
 # === Google Sheets保存設定 ===
@@ -292,7 +292,7 @@ def save_to_google_sheet(name, gender, age_group, model, ctrlpts, weights, alpha
 
 
 # === 送信ボタン ===
-if st.button("保存する(save)"):
+if st.button("save"):
     if not name.strip():
         st.error("⚠️ 記入事項に回答してください。(please answer the questions)")
     else:
