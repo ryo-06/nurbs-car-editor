@@ -182,7 +182,7 @@ if "alpha" not in st.session_state:
     st.session_state.alpha = 0.3
 
 st.session_state.alpha = st.sidebar.slider(
-    "transparency", 0.0, 1.0, st.session_state.alpha, 0.05
+    "透明度(transparency)", 0.0, 1.0, st.session_state.alpha, 0.05
 )
 
 new_ctrlpts, new_weights = [], []
